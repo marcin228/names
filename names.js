@@ -37,7 +37,7 @@
     const result = [];
 
     for(let n of names)
-        result.push({ id: n, names: await getBaseName(names[n]) });
+        result.push({ id: n, name: await getBaseName(names[n]) });
 
     console.log(result);
 })();
