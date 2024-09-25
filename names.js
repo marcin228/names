@@ -1,10 +1,13 @@
 (async () => {
 
-    const getBaseName = async function (diminutive) {
+    const getBaseName = async function (diminutives) {
 
         const apiKey = 'SUPER_SECRET_OPENAI_API_KEY';
 
         try {
+
+            if(!Array.isArray(diminutives))
+                throw new Error('error, getBaseName, incorrect argument');
 
             const response = await fetch('https://api.openai.com/v1/engines/davinci-codex/completions', {
 
@@ -14,7 +17,7 @@
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    prompt: `podaj najpopularniejszą, dorosłą wersję imienia ${diminutive} w mianowniku, użyj tylko jednego słowa, nie stosuj interpunkcji`,
+                    prompt: `podaj listę rozdzieloną przecinkami, najpopularniejszych, dorosłych wersji imion: ${diminutives.join(',')} w mianowniku, użyj po jednym słowie na imię`,
                     max_tokens: 1
                 })
             });
@@ -23,9 +26,9 @@
                 throw new Error('error, getBaseName, response');
 
             let result = await response.json();
-            result = result.choices[0].text.trim();
+            let namesList = result.choices[0].text.trim().split(',').map(item => item.trim());
 
-            return result;
+            return namesList;
         }
         catch (e) {
 
@@ -33,11 +36,12 @@
         }
     }
 
-    const names = ['jaś', 'małgosia'];
-    const result = [];
+    const output = [];
+    const diminutiveNames = ['jaś', 'małgosia'];
+    const regularNames = await getBaseName(diminutiveNames);
 
-    for(let n of names)
-        result[result.length] = { id: n, name: await getBaseName(names[n]) };
+    for(let idx of regularNames)
+        output[output.length] = { id: n, name: regularNames[idx] };
 
-    console.log(result);
+    console.log(output);
 })();

@@ -8,3 +8,5 @@ I have prepared an async function that makes an API call via proper method with 
 There are two error handling mechanisms:
 * check of a status of a response
 * try/catch block that wraps whole fetch call and data extraction from the response
+
+What about performance? To minify the overhead of many small calls I have prepared a query that will receive result in a form of list so the number of tokens spent is optimized.
